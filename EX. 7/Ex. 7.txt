@@ -15,7 +15,7 @@ GROUP BY
 SELECT p.name, c.name
 FROM 
 	products p
-	JOIN
+	LEFT JOIN
 	catalogs c
 ON
 	c.id = p.catalog_id;
@@ -25,17 +25,12 @@ ON
 Выведите список рейсов flights с русскими названиями городов.
 
 SELECT 
-	c1.name `from`,
-	c2.name `to`
+  c1.name `from`,
+  c2.name `to`
 FROM 
-	flights f 
-	JOIN 
-	cities c1 
-	JOIN 
-	cities c2
-ON 
-	f.from = c1.label 
-	AND 
-	f.to = c2.label
-ORDER BY 
-	id;
+  flights f 
+  LEFT JOIN cities c1 
+    ON f.`from` = c1.label  
+  LEFT JOIN cities c2
+    ON f.`to` = c2.label
+ORDER BY f.id;

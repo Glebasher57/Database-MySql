@@ -10,7 +10,7 @@ FROM
 	(SELECT * FROM
 		(SELECT 
 		 	COUNT(*) AS likes_count, -- считаем лайки поставленные пользователю
-			(SELECT birthday FROM profiles WHERE user_id = likes.user_id) AS birthday -- определяем день рождения пользователя для группировки
+			(SELECT birthday FROM profiles WHERE user_id = likes.target_id) AS birthday -- определяем день рождения пользователя для группировки
 		FROM likes
 		WHERE user_id IN (
 				SELECT target_id FROM likes WHERE target_type = 2
@@ -25,15 +25,16 @@ FROM
 
 -- 2. Определить кто больше поставил лайков (всего) - мужчины или женщины?
 
-(SELECT 
-	COUNT(*) AS 'MALE/FEMALE'
-FROM likes
-WHERE user_id IN (SELECT user_id FROM profiles WHERE gender = 'm'))
-UNION
-(SELECT 
-	COUNT(*)
-FROM likes
-WHERE user_id IN (SELECT user_id FROM profiles WHERE gender = 'f'));
+SELECT 
+	COUNT(*), gender
+FROM 
+	likes l 
+	JOIN 
+	profiles p 
+ON 
+	l.user_id = p.user_id 
+GROUP BY 
+	gender;
 
 -- 3. Найти 10 пользователей, которые проявляют наименьшую активность в использовании социальной сети.
 
