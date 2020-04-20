@@ -38,34 +38,15 @@ GROUP BY
 
 -- 3. Найти 10 пользователей, которые проявляют наименьшую активность в использовании социальной сети.
 
---Не смог справиться с 3м заданием. В таком варианте цифры в столбцах получаются верными, 
---но сложить не выходит, т.к. в некоторых ячейках присутствуют NULL значения и возвращается полностью NULL
-
-SELECT u.id, f.mes_f_count, t.mes_t_count, p.p_count, l.l_count, m.m_count AS total
-FROM users u
-	LEFT JOIN (SELECT from_user_id, COUNT(*) AS mes_f_count FROM messages GROUP BY from_user_id) f
-	  ON f.from_user_id = u.id
-	LEFT JOIN (SELECT to_user_id, COUNT(*) AS mes_t_count FROM messages GROUP BY to_user_id) t
-	  ON t.to_user_id = u.id
-	LEFT JOIN (SELECT user_id, COUNT(*) AS p_count FROM posts GROUP BY user_id) p
-	  ON p.user_id = u.id
-	LEFT JOIN (SELECT user_id, COUNT(*) AS l_count FROM likes GROUP BY user_id) l
-	  ON l.user_id = u.id
-	LEFT JOIN (SELECT user_id, COUNT(*) AS m_count FROM media GROUP BY user_id) m
-	  ON m.user_id = u.id
-ORDER BY u.id;
-
--- или такой вариант: 
-
 SELECT DISTINCT 
   u.id,
-  COUNT(DISTINCT mes.from_user_id) +
-  COUNT(DISTINCT p.id) +
+  COUNT(DISTINCT mes.to_user_id) +    -- почему работает именно с приравниванием from_user_id к u.id, 
+  COUNT(DISTINCT p.id) +              -- а подсчет делается по to_user_id (НЕМНОГО ПОНЯТНО (НЕ ПОНЯТНО))
   COUNT(DISTINCT l.id) +
   COUNT(DISTINCT m.id) AS total
   FROM users u 
-    LEFT JOIN messages mes 
-      ON mes.from_user_id = u.id OR mes.to_user_id = u.id
+    LEFT JOIN messages mes
+      ON mes.from_user_id = u.id
     LEFT JOIN posts p
       ON p.user_id = u.id
     LEFT JOIN likes l
@@ -76,5 +57,3 @@ SELECT DISTINCT
   ORDER BY total
   LIMIT 10
  ;
-
--- в некоторых местах ответы не сходятся... не знаю чего не хватает... ужасное задание
