@@ -87,11 +87,11 @@ DELETE FROM test WHERE created_at < @fresh;
 -- Первому пользователю shop_read должны быть доступны только запросы на чтение данных, 
 -- второму пользователю shop — любые операции в пределах базы данных shop.
 
-CREATE USER 'shop_read'@'localhost' IDENTIFIED WITH sha256_password BY '12345';
-GRANT SELECT ON shop.* TO 'shop_read'@'localhost';
+CREATE USER shop_read IDENTIFIED WITH sha256_password BY '12345';
+GRANT SELECT ON shop.* TO shop_read;
 
-CREATE USER 'shop'@'localhost' IDENTIFIED WITH sha256_password BY '12345';
-GRANT ALL ON shop.* TO 'shop'@'localhost';
+CREATE USER shop IDENTIFIED WITH sha256_password BY '12345';
+GRANT ALL ON shop.* TO shop;
 
 -- 2. (по желанию) Пусть имеется таблица accounts содержащая три столбца id, name, password, 
 -- содержащие первичный ключ, имя пользователя и его пароль. Создайте представление username таблицы accounts, 
@@ -101,8 +101,8 @@ GRANT ALL ON shop.* TO 'shop'@'localhost';
 CREATE VIEW acc AS
 SELECT id, name FROM accounts;
 
-CREATE USER 'user_read'@'localhost' IDENTIFIED WITH sha256_password BY '12345';
-GRANT SELECT ON shop.acc TO 'user_read'@'localhost';
+CREATE USER user_read IDENTIFIED WITH sha256_password BY '12345';
+GRANT SELECT ON shop.acc TO user_read;
 
 
 -- Практическое задание по теме “Хранимые процедуры и функции, триггеры"
@@ -114,7 +114,7 @@ GRANT SELECT ON shop.acc TO 'user_read'@'localhost';
 DELIMITER //
 DROP FUNCTION IF EXISTS hello//
 CREATE FUNCTION hello()
-RETURNS VARCHAR(11) NO SQL
+RETURNS VARCHAR(11) DETERMINISTIC
 BEGIN
 	SET @now_time = DATE_FORMAT(NOW(), '%H');
 	IF (@now_time >= 6) AND (@now_time < 12) THEN

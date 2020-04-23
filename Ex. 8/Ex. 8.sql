@@ -40,7 +40,7 @@ GROUP BY
 
 SELECT DISTINCT 
   u.id,
-  COUNT(DISTINCT mes.to_user_id) +    -- почему работает именно с приравниванием from_user_id к u.id, 
+  COUNT(DISTINCT mes.id) +    -- почему работает именно с приравниванием from_user_id к u.id, 
   COUNT(DISTINCT p.id) +              -- а подсчет делается по to_user_id (НЕМНОГО ПОНЯТНО (НЕ ПОНЯТНО))
   COUNT(DISTINCT l.id) +
   COUNT(DISTINCT m.id) AS total
