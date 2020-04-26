@@ -74,11 +74,6 @@ ALTER TABLE orders
     FOREIGN KEY (payment_type_id) REFERENCES payment_types(id)
      ON DELETE CASCADE;
 
-ALTER TABLE orders
-  ADD CONSTRAINT orders_order_delivery_id_fk
-    FOREIGN KEY (order_delivery_id) REFERENCES orders_delivery(order_id)
-	  ON DELETE CASCADE;
-
 -- orders_delivery
 ALTER TABLE orders_delivery
   ADD CONSTRAINT orders_delivery_order_id_fk

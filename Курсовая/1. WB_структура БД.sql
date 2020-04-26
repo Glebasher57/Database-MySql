@@ -166,7 +166,6 @@ CREATE TABLE orders (
 	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	user_id INT UNSIGNED NOT NULL,
 	payment_type_id INT UNSIGNED NOT NULL,
-	order_delivery_id INT UNSIGNED NOT NULL,
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
 ) COMMENT = 'Заказы';
@@ -180,10 +179,8 @@ CREATE TABLE orders_delivery (
 ) COMMENT = 'Способ доставки';
 
 CREATE TABLE orders_products (
-	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	order_id INT UNSIGNED NOT NULL,
 	product_id INT UNSIGNED NOT NULL,
-	total SMALLINT UNSIGNED NOT NULL DEFAULT 1,
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
 ) COMMENT = 'Заказанные товары';
