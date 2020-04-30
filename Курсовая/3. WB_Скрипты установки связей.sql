@@ -2,12 +2,12 @@
 ALTER TABLE profiles
   ADD CONSTRAINT profiles_user_id_fk
     FOREIGN KEY (user_id) REFERENCES users(id)
-	    ON DELETE CASCADE;
+	  ON DELETE CASCADE;
 
 ALTER TABLE profiles
   ADD CONSTRAINT profiles_discount_fk
     FOREIGN KEY (discount_id) REFERENCES discounts(id)
-	    ON DELETE SET NULL;
+	  ON DELETE SET NULL;
 	  
 -- figure_params
 ALTER TABLE figure_params 
@@ -19,19 +19,19 @@ ALTER TABLE figure_params
 ALTER TABLE user_addresses 
   ADD CONSTRAINT user_addresses_user_id_fk
     FOREIGN KEY (user_id) REFERENCES users(id)
-	    ON DELETE CASCADE;
+	  ON DELETE CASCADE;
 
 -- requisites
 ALTER TABLE requisites 
   ADD CONSTRAINT requisites_user_id_fk
     FOREIGN KEY (user_id) REFERENCES users(id)
-	    ON DELETE CASCADE;
+	  ON DELETE CASCADE;
 
 -- active_sessions
 ALTER TABLE active_sessions 
   ADD CONSTRAINT active_sessions_user_id_fk
     FOREIGN KEY (user_id) REFERENCES users(id)
-	    ON DELETE CASCADE;
+	  ON DELETE CASCADE;
 
 -- discounts
 ALTER TABLE discounts 
@@ -155,3 +155,26 @@ ALTER TABLE images
   ADD CONSTRAINT images_product_id_fk
     FOREIGN KEY (product_id) REFERENCES products(id)
 	  ON DELETE CASCADE;
+
+-- Инедксы добавил в основном основываясь на анализе запросов ч-з EXPLAIN
+
+CREATE INDEX payment_types_id_name_idx
+  ON payment_types(id, name);
+
+CREATE INDEX orders_products_order_id_product_id_idx
+  ON orders_products(order_id, product_id);
+
+CREATE INDEX orders_delivery_ord_id_del_meth_id_del_serv_id_idx
+  ON orders_delivery(order_id, delivery_method_id, delivery_service_id);
+
+CREATE INDEX storehouses_id_name_idx
+  ON storehouses(id, name);
+
+CREATE INDEX delivery_methods_id_name_idx
+  ON delivery_methods(id, name);
+
+CREATE INDEX storehouses_products_storehouse_id_product_id_value_idx
+  ON storehouses_products(storehouse_id, product_id, value);
+
+CREATE INDEX orders_id_created_at_idx
+  ON orders(id, created_at);

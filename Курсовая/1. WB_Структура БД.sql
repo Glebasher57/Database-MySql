@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS WildBerries;
 CREATE DATABASE WildBerries;
 
 USE WildBerries;
@@ -87,8 +88,7 @@ CREATE TABLE discounts (
 CREATE TABLE promo_codes (
 	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	code VARCHAR(10) NOT NULL UNIQUE,
-	created_at DATETIME DEFAULT NOW(),
-	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
+	created_at DATETIME DEFAULT NOW()
 ) COMMENT = 'Промокоды';
 
 CREATE TABLE notifications (
@@ -101,8 +101,8 @@ CREATE TABLE notifications (
 ) COMMENT = 'Уведомления';
 
 CREATE TABLE catalogs (
-	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(50) NOT NULL UNIQUE COMMENT 'Название раздела', 
+	id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	name VARCHAR(50) NOT NULL UNIQUE COMMENT 'Название раздела',
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
 ) COMMENT = 'Каталоги';
@@ -112,17 +112,16 @@ CREATE TABLE products (
 	vendor_code INT UNSIGNED NOT NULL COMMENT 'Артикул',
 	name VARCHAR(50) NOT NULL,
 	description TEXT NOT NULL,
-	available SMALLINT(1) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Доступность товара на складе',
+	available TINYINT(1) UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Доступность товара на складе',
 	price DECIMAL(11,2) NOT NULL,
 	keywords VARCHAR(255),
-	catalog_id INT UNSIGNED NOT NULL,
+	catalog_id SMALLINT UNSIGNED NOT NULL,
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
 ) COMMENT = 'Товары';
 
 CREATE TABLE product_properties (
-	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	product_id INT UNSIGNED NOT NULL,
+	product_id INT UNSIGNED NOT NULL PRIMARY KEY,
 	gender CHAR(1) DEFAULT NULL COMMENT 'На случай одежды и пр.',
 	property_name VARCHAR(255) NOT NULL COMMENT 'Название свойства. Напр-р: красный, металл и т.д.',
 	property_value VARCHAR(255) NOT NULL COMMENT 'Значение свойства. Напр-р: 20% хлопка, 20 г и т.д.',
@@ -130,15 +129,15 @@ CREATE TABLE product_properties (
 ) COMMENT = 'Свойства товаров';
 
 CREATE TABLE payment_types (
-	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(50) NOT NULL UNIQUE,
+	id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	name ENUM('В пункте выдачи', 'Курьеру по прибытию', 'Online') NOT NULL,
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
 ) COMMENT = 'Типы оплаты';
 
 CREATE TABLE delivery_methods (
-	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-	name VARCHAR(50) NOT NULL,
+	id TINYINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	name ENUM('Пункт выдачи', 'Курьерская доставка') NOT NULL,
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
 ) COMMENT = 'Методы доставки';
@@ -165,14 +164,14 @@ CREATE TABLE delivery_services (
 CREATE TABLE orders (
 	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	user_id INT UNSIGNED NOT NULL,
-	payment_type_id INT UNSIGNED NOT NULL,
+	payment_type_id TINYINT UNSIGNED NOT NULL,
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
 ) COMMENT = 'Заказы';
 
 CREATE TABLE orders_delivery (
 	order_id INT UNSIGNED NOT NULL PRIMARY KEY,
-	delivery_method_id INT UNSIGNED NOT NULL,
+	delivery_method_id TINYINT UNSIGNED NOT NULL,
 	delivery_service_id INT UNSIGNED DEFAULT NULL,
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
@@ -202,10 +201,9 @@ CREATE TABLE storehouses (
 ) COMMENT = 'Склады';
 
 CREATE TABLE storehouses_products (
-	id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	storehouse_id INT UNSIGNED NOT NULL,
-	product_id INT UNSIGNED NOT NULL,
-	value SMALLINT UNSIGNED NOT NULL,
+	product_id INT UNSIGNED NOT NULL PRIMARY KEY, -- в определенных складах имеется только определенный вид товара
+	value SMALLINT UNSIGNED NOT NULL, -- кол-во
 	created_at DATETIME DEFAULT NOW(),
 	updated_at DATETIME DEFAULT NOW() ON UPDATE NOW()
 ) COMMENT = 'Количество товаров';

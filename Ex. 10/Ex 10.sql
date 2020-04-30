@@ -44,6 +44,22 @@ SELECT DISTINCT c.name AS group_name,
       ON cu.community_id = c.id
       WINDOW w AS (PARTITION BY cu.community_id);
 
+--исправленный вариант
+
+SELECT DISTINCT c.name AS group_name,
+ 	COUNT(cu.user_id) OVER() / (SELECT COUNT(*) FROM communities) AS avg_amount,
+ 	FIRST_VALUE(cu.user_id) OVER (w ORDER BY p.birthday DESC) AS younger,
+ 	FIRST_VALUE(cu.user_id) OVER (w ORDER BY p.birthday) AS older,
+	COUNT(cu.user_id) OVER w AS amount_users_in_gp,
+	(SELECT COUNT(*) FROM users) AS total_users,
+	COUNT(cu.user_id) OVER w / (SELECT COUNT(*) FROM users) * 100 AS '%%'
+  FROM communities c
+  	LEFT JOIN communities_users cu
+      ON cu.community_id = c.id
+    LEFT JOIN profiles p
+      ON p.user_id = cu.user_id
+      WINDOW w AS (PARTITION BY cu.community_id);
+      
 -- 3. (по желанию) Задание на денормализацию
 -- Разобраться как построен и работает следующий запрос:
 -- Найти 10 пользователей, которые проявляют наименьшую активность в использовании социальной сети.
